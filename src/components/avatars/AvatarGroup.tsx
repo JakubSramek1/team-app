@@ -3,7 +3,7 @@ import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import { apiCall } from '../../pages/Home'
 
-interface IEmployee {
+export interface IEmployee {
     createdAt: string
     endDate: string | null
     id: string
@@ -31,7 +31,6 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
             .select()
             .eq('team', teamId)
         if (data) setAvatars(data)
-        console.log(teamId, data)
     }
 
     return (

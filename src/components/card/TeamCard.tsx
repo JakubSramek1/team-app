@@ -1,10 +1,11 @@
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { CardActionArea } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import AvatarContainer from '../avatars/AvatarGroup'
+import { apiCall } from '../../pages/Home'
 
 interface Props {
     id: string
