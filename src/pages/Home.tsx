@@ -87,24 +87,39 @@ const Home: FC = () => {
     return (
         <Box>
             <Typography variant="h2" align="center">
-                Teams
+                Týmy
+            </Typography>
+            <Typography variant="h4" align="center">
+                informace o týmu
             </Typography>
             {currentTeam && (
                 <>
-                    <Typography variant="h2" align="center">
-                        {currentTeam.name}
+                    <Typography variant="h3" align="center">
+                        Název týmu: {currentTeam.name}
                     </Typography>
                     <Typography variant="body2" align="center">
-                        {currentTeam.createdAt}
+                        Datum vytvoření: {currentTeam.createdAt}
                     </Typography>
                     <Typography variant="body2" align="center">
+                        Nadřazený tým:
                         {parentTeam?.name || 'nemá nadřazený tým'}
                     </Typography>
                 </>
             )}
             {teamEmployees.length > 0 && (
+                <Typography variant="body2" align="center">
+                    Počet členů týmu: {teamEmployees.length}
+                </Typography>
+            )}
+            <Typography variant="h4" align="center">
+                Členové týmu
+            </Typography>
+            {teamEmployees.length > 0 && (
                 <EmployeeList employees={teamEmployees} />
             )}
+            <Typography variant="h4" align="center">
+                Podřazené týmy
+            </Typography>
             {teams.map(({ id, name, parentTeam }) => (
                 <TeamCard
                     key={id}
