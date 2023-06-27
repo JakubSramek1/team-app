@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { CardActionArea } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import AvatarContainer from '../avatars/AvatarGroup'
 
 interface Props {
     id: string
@@ -23,6 +24,7 @@ const TeamCard: FC<Props> = ({ id, name, parentTeam, onClick }) => {
                     <Typography gutterBottom variant="h5" component="div">
                         {name}
                     </Typography>
+                    <AvatarContainer teamId={id} />
                 </CardContent>
             </CardActionArea>
         </Card>
