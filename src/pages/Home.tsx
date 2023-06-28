@@ -1,27 +1,26 @@
 import { FC } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import TeamCard from '../components/card/TeamCard'
 import { IEmployee } from '../components/avatars/AvatarGroup'
 import EmployeeList from '../components/lists/EmployeeList'
 import { Box } from '@mui/material'
+import {
+    fetchAllTeams,
+    fetchChildrenTeams,
+    fetchParentTeam,
+    fetchTeam,
+} from '../api/teams'
+import { fetchTeamEmployees } from '../api/employees'
 
 export interface ITeam {
-    createdAt: string
+    createdAt: string | null
     id: string
-    name: string
-    parentTeam?: string
-}
-
-export function apiCall(path: string) {
-    const supabaseKey = process.env.REACT_APP_SUPABASE_KEY || ''
-    const backendUrl = process.env.REACT_APP_BACKEND_URL || ''
-    return createClient(`${backendUrl}${path}`, supabaseKey)
+    name: string | null
+    parentTeam: string | null
 }
 
 const Home: FC = () => {
-    const [data, setData] = useState<ITeam[]>([])
     const [teams, setTeams] = useState<ITeam[]>([])
     const [currentTeam, setCurrentTeam] = useState<ITeam | null>(null)
     const [parentTeam, setParentTeam] = useState<ITeam | null>(null)
@@ -32,11 +31,8 @@ const Home: FC = () => {
     }, [])
 
     const handler = async () => {
-        const { data, error } = await apiCall('teams?select=*')
-            .from('')
-            .select()
+        const data = await fetchAllTeams()
         if (data) {
-            setData(data)
             const filtered = data.filter((t) => t.parentTeam === null)
             setTeams(filtered)
         }
@@ -44,22 +40,12 @@ const Home: FC = () => {
 
     const handleClick = async (id: string) => {
         getTeam(id)
-        const { data, error } = await apiCall(`teams?select=*`)
-            .from('')
-            .select()
-            .eq('parentTeam', id)
-
-        if (data) {
-            setTeams(data)
-        }
+        const data = await fetchChildrenTeams(id)
+        if (data) setTeams(data)
     }
 
     const getTeam = async (id: string) => {
-        const { data, error } = await apiCall('teams?select=*')
-            .from('')
-            .select()
-            .eq('id', id)
-            .single()
+        const data = await fetchTeam(id)
         if (data) {
             setCurrentTeam(data)
             getParentTeam(id)
@@ -68,19 +54,12 @@ const Home: FC = () => {
     }
 
     const getParentTeam = async (parentId: string) => {
-        const { data, error } = await apiCall('teams?select=*')
-            .from('')
-            .select()
-            .eq('id', parentId)
-            .single()
+        const data = await fetchParentTeam(parentId)
         if (data) setParentTeam(data)
     }
 
     const getTeamEmployees = async (teamId: string) => {
-        const { data, error } = await apiCall('employees?select=*')
-            .from('')
-            .select()
-            .eq('team', teamId)
+        const data = await fetchTeamEmployees(teamId)
         if (data) setTeamEmployees(data)
     }
 
@@ -89,11 +68,12 @@ const Home: FC = () => {
             <Typography variant="h2" align="center">
                 Týmy
             </Typography>
-            <Typography variant="h4" align="center">
-                informace o týmu
-            </Typography>
+
             {currentTeam && (
                 <>
+                    <Typography variant="h4" align="center">
+                        informace o týmu
+                    </Typography>
                     <Typography variant="h3" align="center">
                         Název týmu: {currentTeam.name}
                     </Typography>
@@ -104,31 +84,34 @@ const Home: FC = () => {
                         Nadřazený tým:
                         {parentTeam?.name || 'nemá nadřazený tým'}
                     </Typography>
+                    {teamEmployees.length > 0 && (
+                        <Typography variant="body2" align="center">
+                            Počet členů týmu: {teamEmployees.length}
+                        </Typography>
+                    )}
+                    <Typography variant="h4" align="center">
+                        Členové týmu
+                    </Typography>
+                    {teamEmployees.length > 0 && (
+                        <EmployeeList employees={teamEmployees} />
+                    )}
                 </>
-            )}
-            {teamEmployees.length > 0 && (
-                <Typography variant="body2" align="center">
-                    Počet členů týmu: {teamEmployees.length}
-                </Typography>
-            )}
-            <Typography variant="h4" align="center">
-                Členové týmu
-            </Typography>
-            {teamEmployees.length > 0 && (
-                <EmployeeList employees={teamEmployees} />
             )}
             <Typography variant="h4" align="center">
                 Podřazené týmy
             </Typography>
-            {teams.map(({ id, name, parentTeam }) => (
-                <TeamCard
-                    key={id}
-                    id={id}
-                    name={name}
-                    parentTeam={parentTeam}
-                    onClick={() => handleClick(id)}
-                />
-            ))}
+
+            <Box display="flex" flexDirection="row" mb={6}>
+                {teams.map(({ id, name, parentTeam }) => (
+                    <TeamCard
+                        key={id}
+                        id={id}
+                        name={name || ''}
+                        parentTeam={parentTeam || ''}
+                        onClick={() => handleClick(id)}
+                    />
+                ))}
+            </Box>
         </Box>
     )
 }

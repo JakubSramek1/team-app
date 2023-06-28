@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
-import { apiCall } from '../../pages/Home'
+import { fetchTeamEmployees } from '../../api/employees'
 
 export interface IEmployee {
     createdAt: string
@@ -26,10 +26,7 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
     }, [])
 
     const handler = async () => {
-        const { data, error } = await apiCall('employees?select=*')
-            .from('')
-            .select()
-            .eq('team', teamId)
+        const data = await fetchTeamEmployees(teamId)
         if (data) setAvatars(data)
     }
 
@@ -37,7 +34,11 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
         <AvatarGroup max={4}>
             {avatars.map(({ id, name, surname }) => (
                 <span key={id} title={`${name} ${surname}`}>
-                    <Avatar alt={name} src="1.jpg" />
+                    <Avatar
+                        sx={{ backgroundColor: '#02D076' }}
+                        alt={name}
+                        src="1.jpg"
+                    />
                 </span>
             ))}
         </AvatarGroup>
