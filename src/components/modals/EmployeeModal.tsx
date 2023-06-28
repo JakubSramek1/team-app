@@ -46,7 +46,10 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee }) => {
                     onClick={() => setIsEditMode((prev) => !prev)}
                 />
                 <span title={`${name} ${surname}`}>
-                    <Avatar sx={{ backgroundColor: '#02D076' }} alt="avatar">
+                    <Avatar
+                        sx={{ backgroundColor: endDate ? '#000' : '#02D076' }}
+                        alt="avatar"
+                    >
                         {name.charAt(0)}
                     </Avatar>
                 </span>

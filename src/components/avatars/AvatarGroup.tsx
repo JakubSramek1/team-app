@@ -32,10 +32,10 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
 
     return (
         <AvatarGroup max={4}>
-            {avatars.map(({ id, name, surname }) => (
+            {avatars.map(({ id, name, surname, endDate }) => (
                 <span key={id} title={`${name} ${surname}`}>
                     <Avatar
-                        sx={{ backgroundColor: '#02D076' }}
+                        sx={{ backgroundColor: endDate ? '#000' : '#02D076' }}
                         alt={name}
                         src="1.jpg"
                     />

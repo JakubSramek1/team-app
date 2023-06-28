@@ -30,34 +30,41 @@ const EmployeeList: FC<Props> = ({ employees }) => {
                         alignContent: 'center',
                     }}
                 >
-                    {employees.map(({ id, name, surname, position }) => (
-                        <ListItem
-                            onClick={() => handleClick(id)}
-                            sx={{
-                                border: '1px solid #000',
-                                m: 1,
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    backgroundColor: '#ccc8c8',
-                                    transition: '.5s',
-                                },
-                            }}
-                        >
-                            <ListItemAvatar>
-                                <span key={id} title={`${name} ${surname}`}>
-                                    <Avatar
-                                        sx={{ backgroundColor: '#02D076' }}
-                                        alt={name}
-                                        src="1.jpg"
-                                    />
-                                </span>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={`${name} ${surname}`}
-                                secondary={position}
-                            />
-                        </ListItem>
-                    ))}
+                    {employees.map(
+                        ({ id, name, surname, position, endDate }) => (
+                            <ListItem
+                                onClick={() => handleClick(id)}
+                                sx={{
+                                    border: '1px solid #000',
+                                    m: 1,
+                                    cursor: 'pointer',
+                                    backgroundColor: endDate ? 'gray' : '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#ccc8c8',
+                                        transition: '.5s',
+                                    },
+                                }}
+                            >
+                                <ListItemAvatar>
+                                    <span key={id} title={`${name} ${surname}`}>
+                                        <Avatar
+                                            sx={{
+                                                backgroundColor: endDate
+                                                    ? '#000'
+                                                    : '#02D076',
+                                            }}
+                                            alt={name}
+                                            src="1.jpg"
+                                        />
+                                    </span>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={`${name} ${surname}`}
+                                    secondary={position}
+                                />
+                            </ListItem>
+                        )
+                    )}
                 </List>
             </Box>
             {currentEmployee && (
