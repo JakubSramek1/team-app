@@ -9,17 +9,17 @@ import {
 } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { IEmployee } from '../avatars/AvatarGroup'
-import { Edit, Close } from '@mui/icons-material'
-import moment from 'moment'
+import { Edit, Close, Delete } from '@mui/icons-material'
 import PrimaryInput from '../inputs/PrimaryInput'
 import { fetchAllTeams } from '../../api/teams'
 import { ITeam } from '../../pages/Home'
-import { updateEmployee } from '../../api/employees'
+import { addEmployee, updateEmployee } from '../../api/employees'
 
 interface Props {
     open: boolean
     onClose: () => void
-    employee: IEmployee
+    onSave?: () => void
+    employee: IEmployee | null
 }
 
 const style = {
@@ -34,34 +34,50 @@ const style = {
     p: 4,
 }
 
-const EmployeeModal: FC<Props> = ({ open, onClose, employee }) => {
-    const { name, position, surname, team, id, startDate } = employee
-    const [isEditMode, setIsEditMode] = useState<boolean>(false)
+const EmployeeModal: FC<Props> = ({ open, onClose, employee, onSave }) => {
+    const [isEditMode, setIsEditMode] = useState<boolean>(!employee)
     const [teams, setTeams] = useState<ITeam[]>([])
-    const [modalData, setData] = useState<IEmployee>(employee)
+    const [modalData, setData] = useState<IEmployee | null>(employee)
     const [isError, setIsError] = useState<boolean>(false)
 
     useEffect(() => {
         getTeams()
     }, [])
 
-    useEffect(() => {
-        console.log(modalData)
-    })
-
     const getTeams = async () => {
         const { data } = await fetchAllTeams()
         if (data) setTeams(data)
     }
 
-    const onSave = async () => {
-        const { data, error } = await updateEmployee(modalData)
-        if (error) {
-            setIsError(true)
-            return
+    const save = async () => {
+        if (modalData) {
+            if (employee) {
+                const { error } = await updateEmployee(modalData)
+                if (error) {
+                    setIsError(true)
+                    return
+                }
+            } else {
+                const { error } = await addEmployee(modalData)
+                if (error) {
+                    setIsError(true)
+                    return
+                }
+            }
+            onClose()
+            if (onSave) onSave()
         }
+    }
 
-        onClose()
+    const onChange = (
+        param: keyof IEmployee,
+        value: IEmployee[keyof IEmployee]
+    ) => {
+        setData((prev) =>
+            prev
+                ? { ...prev, [param]: value }
+                : Object.assign({ [param]: value })
+        )
     }
 
     return (
@@ -71,57 +87,54 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee }) => {
                     <Typography variant="h5" align="center">
                         Zaměstnanec
                     </Typography>
-                    {isEditMode ? (
-                        <Close
-                            sx={{
-                                color: 'gray',
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => setIsEditMode(false)}
+                    <Grid>
+                        {isEditMode ? (
+                            <Close
+                                sx={{
+                                    color: 'gray',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => setIsEditMode(false)}
+                            />
+                        ) : (
+                            <Edit
+                                sx={{
+                                    color: '#10BFFC',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => setIsEditMode(true)}
+                            />
+                        )}
+                        <Delete
+                            sx={{ ml: 2, color: 'red', cursor: 'pointer' }}
                         />
-                    ) : (
-                        <Edit
-                            sx={{
-                                color: '#10BFFC',
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => setIsEditMode(true)}
-                        />
-                    )}
+                    </Grid>
                 </Grid>
                 <Grid mb={3}>
                     <PrimaryInput
                         label="Jméno"
                         disabled={!isEditMode}
-                        value={name}
-                        onChange={(name) =>
-                            setData((prev) => ({ ...prev, name }))
-                        }
+                        value={modalData?.name ?? null}
+                        onChange={(name) => onChange('name', name)}
                     />
                     <PrimaryInput
                         label="Příjmení"
                         disabled={!isEditMode}
-                        value={surname}
-                        onChange={(surname) =>
-                            setData((prev) => ({ ...prev, surname }))
-                        }
+                        value={modalData?.surname ?? null}
+                        onChange={(surname) => onChange('surname', surname)}
                     />
                     <PrimaryInput
                         label="Pozice"
                         disabled={!isEditMode}
-                        value={position}
-                        onChange={(position) =>
-                            setData((prev) => ({ ...prev, position }))
-                        }
+                        value={modalData?.position ?? null}
+                        onChange={(position) => onChange('position', position)}
                     />
                     <PrimaryInput
                         label="Tým"
                         disabled={!isEditMode}
-                        value={team}
+                        value={modalData?.team ?? null}
                         select
-                        onChange={(team) =>
-                            setData((prev) => ({ ...prev, team }))
-                        }
+                        onChange={(team) => onChange('team', team)}
                     >
                         {teams.map(({ id, name }) => (
                             <MenuItem key={id} value={id}>
@@ -129,14 +142,6 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee }) => {
                             </MenuItem>
                         ))}
                     </PrimaryInput>
-                    <PrimaryInput
-                        label="Nastoupil"
-                        disabled={!isEditMode}
-                        value={moment(startDate, 'YYYY-MM-DD').format(
-                            'DD.MM.YYYY'
-                        )}
-                        onChange={(startDate) => console.log(startDate)}
-                    />
                 </Grid>
                 {isError && (
                     <Grid display="flex" justifyContent="center" mb={3}>
@@ -159,7 +164,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee }) => {
                     {isEditMode && (
                         <Button
                             variant="outlined"
-                            onClick={onSave}
+                            onClick={save}
                             color="primary"
                         >
                             Uložit

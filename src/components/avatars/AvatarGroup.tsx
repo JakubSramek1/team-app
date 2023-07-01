@@ -14,6 +14,15 @@ export interface IEmployee {
     team: string | null
 }
 
+export interface IPostEmployee {
+    endDate: string | null
+    name: string
+    position: string | null
+    startDate: string | null
+    surname: string
+    team: string | null
+}
+
 interface Props {
     teamId: string
 }
@@ -36,9 +45,9 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
                 <span key={id} title={`${name} ${surname}`}>
                     <Avatar
                         sx={{ backgroundColor: endDate ? '#000' : '#02D076' }}
-                        alt={name}
-                        src="1.jpg"
-                    />
+                    >
+                        {name.charAt(0)}
+                    </Avatar>
                 </span>
             ))}
         </AvatarGroup>
