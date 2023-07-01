@@ -31,7 +31,7 @@ const Home: FC = () => {
     }, [])
 
     const handler = async () => {
-        const data = await fetchAllTeams()
+        const { data } = await fetchAllTeams()
         if (data) {
             const filtered = data.filter((t) => t.parentTeam === null)
             setTeams(filtered)
@@ -40,12 +40,12 @@ const Home: FC = () => {
 
     const handleClick = async (id: string) => {
         getTeam(id)
-        const data = await fetchChildrenTeams(id)
+        const { data } = await fetchChildrenTeams(id)
         if (data) setTeams(data)
     }
 
     const getTeam = async (id: string) => {
-        const data = await fetchTeam(id)
+        const { data } = await fetchTeam(id)
         if (data) {
             setCurrentTeam(data)
             getParentTeam(id)
@@ -54,12 +54,12 @@ const Home: FC = () => {
     }
 
     const getParentTeam = async (parentId: string) => {
-        const data = await fetchParentTeam(parentId)
+        const { data } = await fetchParentTeam(parentId)
         if (data) setParentTeam(data)
     }
 
     const getTeamEmployees = async (teamId: string) => {
-        const data = await fetchTeamEmployees(teamId)
+        const { data } = await fetchTeamEmployees(teamId)
         if (data) setTeamEmployees(data)
     }
 
@@ -93,7 +93,10 @@ const Home: FC = () => {
                         Členové týmu
                     </Typography>
                     {teamEmployees.length > 0 && (
-                        <EmployeeList employees={teamEmployees} />
+                        <EmployeeList
+                            employees={teamEmployees}
+                            onUpdate={() => getTeamEmployees(currentTeam.id)}
+                        />
                     )}
                 </>
             )}

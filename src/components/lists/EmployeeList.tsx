@@ -10,15 +10,22 @@ import EmployeeModal from '../modals/EmployeeModal'
 
 interface Props {
     employees: IEmployee[]
+    onUpdate: () => void
 }
 
-const EmployeeList: FC<Props> = ({ employees }) => {
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    const [currentEmployee, setCurrentEmployee] = useState<IEmployee>()
+const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
+    const [currentEmployee, setCurrentEmployee] = useState<IEmployee | null>(
+        null
+    )
 
     const handleClick = (employeeId: string) => {
         const current = employees.find(({ id }) => id === employeeId)
-        setCurrentEmployee(current)
+        setCurrentEmployee(current ?? null)
+    }
+
+    const onCloseModal = () => {
+        setCurrentEmployee(null)
+        onUpdate()
     }
 
     return (
@@ -70,7 +77,7 @@ const EmployeeList: FC<Props> = ({ employees }) => {
             {currentEmployee && (
                 <EmployeeModal
                     open={!!currentEmployee}
-                    onClose={() => setCurrentEmployee(undefined)}
+                    onClose={onCloseModal}
                     employee={currentEmployee}
                 />
             )}

@@ -26,7 +26,7 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
     }, [])
 
     const handler = async () => {
-        const data = await fetchTeamEmployees(teamId)
+        const { data } = await fetchTeamEmployees(teamId)
         if (data) setAvatars(data)
     }
 
