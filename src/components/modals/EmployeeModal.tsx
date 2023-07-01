@@ -13,12 +13,16 @@ import { Edit, Close, Delete } from '@mui/icons-material'
 import PrimaryInput from '../inputs/PrimaryInput'
 import { fetchAllTeams } from '../../api/teams'
 import { ITeam } from '../../pages/Home'
-import { addEmployee, updateEmployee } from '../../api/employees'
+import {
+    addEmployee,
+    deleteEmployee,
+    updateEmployee,
+} from '../../api/employees'
 
 interface Props {
     open: boolean
     onClose: () => void
-    onSave?: () => void
+    reload: () => void
     employee: IEmployee | null
 }
 
@@ -34,7 +38,7 @@ const style = {
     p: 4,
 }
 
-const EmployeeModal: FC<Props> = ({ open, onClose, employee, onSave }) => {
+const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
     const [isEditMode, setIsEditMode] = useState<boolean>(!employee)
     const [teams, setTeams] = useState<ITeam[]>([])
     const [modalData, setData] = useState<IEmployee | null>(employee)
@@ -65,8 +69,18 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, onSave }) => {
                 }
             }
             onClose()
-            if (onSave) onSave()
+            reload()
         }
+    }
+
+    const handleDelete = async (employeeId: string) => {
+        const { error } = await deleteEmployee(employeeId)
+        if (error) {
+            setIsError(true)
+            return
+        }
+        onClose()
+        reload() //rename
     }
 
     const onChange = (
@@ -107,6 +121,9 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, onSave }) => {
                         )}
                         <Delete
                             sx={{ ml: 2, color: 'red', cursor: 'pointer' }}
+                            onClick={() =>
+                                employee && handleDelete(employee.id)
+                            }
                         />
                     </Grid>
                 </Grid>

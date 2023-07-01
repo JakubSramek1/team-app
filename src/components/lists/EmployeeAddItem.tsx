@@ -18,9 +18,11 @@ const styles = {
     },
 } as const
 
-interface Props {}
+interface Props {
+    reload: () => void
+}
 
-const EmployeeAddItem: FC = ({}) => {
+const EmployeeAddItem: FC<Props> = ({ reload }) => {
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
 
     const onClick = async () => {
@@ -41,6 +43,7 @@ const EmployeeAddItem: FC = ({}) => {
                     open={modalIsOpen}
                     onClose={onCloseModal}
                     employee={null}
+                    reload={reload}
                 />
             )}
         </>

@@ -10,7 +10,6 @@ export const fetchTeamEmployees = async (teamId: string) => {
 }
 
 export const updateEmployee = async (newData: IEmployee) => {
-    console.log('update')
     const { createdAt, ...rest } = newData
     const { data, error } = await apiCall()
         .from('employees')
@@ -22,8 +21,16 @@ export const updateEmployee = async (newData: IEmployee) => {
 type EmployeeAddType = Omit<IEmployee, 'id' | 'startDate'>
 
 export const addEmployee = async (newData: EmployeeAddType) => {
-    console.log('add')
     const { data, error } = await apiCall().from('employees').insert(newData)
+
+    return handler(data, error)
+}
+
+export const deleteEmployee = async (employeeId: string) => {
+    const { data, error } = await apiCall()
+        .from('employees')
+        .delete()
+        .eq('id', employeeId)
 
     return handler(data, error)
 }

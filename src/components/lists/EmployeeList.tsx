@@ -47,7 +47,7 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
                             />
                         )
                     )}
-                    <EmployeeAddItem />
+                    <EmployeeAddItem reload={() => onUpdate()} />
                 </List>
             </Box>
             {currentEmployee && (
@@ -55,7 +55,7 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
                     open={!!currentEmployee}
                     onClose={onCloseModal}
                     employee={currentEmployee}
-                    onSave={() => onUpdate()}
+                    reload={() => onUpdate()}
                 />
             )}
         </>
