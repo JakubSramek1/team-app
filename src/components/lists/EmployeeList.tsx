@@ -31,7 +31,6 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
             <Box display="flex" justifyContent="center">
                 <List
                     sx={{
-                        bgcolor: 'background.paper',
                         alignContent: 'center',
                     }}
                 >

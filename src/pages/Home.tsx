@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import TeamCard from '../components/card/TeamCard'
 import { IEmployee } from '../components/avatars/AvatarGroup'
 import EmployeeList from '../components/lists/EmployeeList'
-import { Box } from '@mui/material'
+import { Box, Card, CardContent, Grid } from '@mui/material'
 import {
     fetchAllTeams,
     fetchChildrenTeams,
@@ -65,44 +65,59 @@ const Home: FC = () => {
 
     return (
         <Box>
-            <Typography variant="h2" align="center">
-                Týmy
-            </Typography>
+            {!currentTeam && (
+                <Typography variant="h3" align="center" mt={3}>
+                    Týmy
+                </Typography>
+            )}
 
             {currentTeam && (
-                <>
-                    <Typography variant="h4" align="center">
-                        informace o týmu
-                    </Typography>
-                    <Typography variant="h3" align="center">
-                        Název týmu: {currentTeam.name}
-                    </Typography>
-                    <Typography variant="body2" align="center">
-                        Datum vytvoření: {currentTeam.createdAt}
-                    </Typography>
-                    <Typography variant="body2" align="center">
-                        Nadřazený tým:
-                        {parentTeam?.name || 'nemá nadřazený tým'}
-                    </Typography>
-                    {teamEmployees.length > 0 && (
-                        <Typography variant="body2" align="center">
-                            Počet členů týmu: {teamEmployees.length}
-                        </Typography>
-                    )}
-                    <Typography variant="h4" align="center">
-                        Členové týmu
-                    </Typography>
-                    {teamEmployees.length > 0 && (
-                        <EmployeeList
-                            employees={teamEmployees}
-                            onUpdate={() => getTeamEmployees(currentTeam.id)}
-                        />
-                    )}
-                </>
+                <Grid display="flex" justifyContent="center">
+                    <Card
+                        sx={{
+                            m: 5,
+                            width: '500px',
+                            '&:hover': {
+                                backgroundColor: '#f5f5f5',
+                                transition: '.5s',
+                            },
+                        }}
+                    >
+                        <CardContent>
+                            <Typography variant="h4" align="center" mb={2}>
+                                Informace o týmu
+                            </Typography>
+                            <Typography variant="body1" align="center">
+                                Název týmu: {currentTeam.name}
+                            </Typography>
+                            <Typography variant="body1" align="center">
+                                Datum vytvoření: {currentTeam.createdAt}
+                            </Typography>
+                            {teamEmployees.length > 0 && (
+                                <Typography variant="body1" align="center">
+                                    Počet členů týmu: {teamEmployees.length}
+                                </Typography>
+                            )}
+                            <Typography variant="h5" align="center" mt={2}>
+                                Členové týmu
+                            </Typography>
+                            {teamEmployees.length > 0 && (
+                                <EmployeeList
+                                    employees={teamEmployees}
+                                    onUpdate={() =>
+                                        getTeamEmployees(currentTeam.id)
+                                    }
+                                />
+                            )}
+                        </CardContent>
+                    </Card>
+                </Grid>
             )}
-            <Typography variant="h4" align="center">
-                Podřazené týmy
-            </Typography>
+            {currentTeam && teams.length > 0 && (
+                <Typography variant="h4" align="center">
+                    Podřazené týmy
+                </Typography>
+            )}
 
             <Box display="flex" flexDirection="row" mb={6}>
                 {teams.map(({ id, name, parentTeam }) => (
