@@ -26,5 +26,8 @@
             "cancel": "Zavřít",
             "save": "Uložit"
         }
+    },
+    "addEmployee": {
+        "title": "Přidat zaměstnance"
     }
 }

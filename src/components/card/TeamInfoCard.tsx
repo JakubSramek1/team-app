@@ -1,5 +1,5 @@
 import { Card, CardContent, Grid, Typography } from '@mui/material'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import EmployeeList from '../lists/EmployeeList'
 import { fetchTeamEmployees } from '../../api/employees'
 import { IEmployee } from '../avatars/AvatarGroup'
@@ -31,10 +31,10 @@ const TeamInfoCard: FC<Props> = ({ team }) => {
         getTeamEmployees(id)
     }, [id])
 
-    const getTeamEmployees = useCallback(async (teamId: string) => {
+    const getTeamEmployees = async (teamId: string) => {
         const { data } = await fetchTeamEmployees(teamId)
         if (data) setTeamEmployees(data)
-    }, [])
+    }
 
     return (
         <Grid display="flex" justifyContent="center">

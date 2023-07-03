@@ -1,5 +1,5 @@
 import List from '@mui/material/List'
-import { FC, useCallback, useState } from 'react'
+import { FC, useState } from 'react'
 import { IEmployee } from '../avatars/AvatarGroup'
 import { Box } from '@mui/material'
 import EmployeeModal from '../modals/EmployeeModal'
@@ -16,18 +16,15 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
         null
     )
 
-    const handleClick = useCallback(
-        (employeeId: string, employees: IEmployee[]) => {
-            const current = employees.find(({ id }) => id === employeeId)
-            setCurrentEmployee(current ?? null)
-        },
-        []
-    )
+    const handleClick = (employeeId: string, employees: IEmployee[]) => {
+        const current = employees.find(({ id }) => id === employeeId)
+        setCurrentEmployee(current ?? null)
+    }
 
-    const onCloseModal = useCallback(() => {
+    const onCloseModal = () => {
         setCurrentEmployee(null)
         onUpdate()
-    }, [])
+    }
 
     return (
         <>
@@ -57,7 +54,6 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
                     open={!!currentEmployee}
                     onClose={onCloseModal}
                     employee={currentEmployee}
-                    reload={() => onUpdate()}
                 />
             )}
         </>

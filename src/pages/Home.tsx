@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext } from 'react'
+import { FC, useContext } from 'react'
 import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import TeamCard from '../components/card/TeamCard'
@@ -22,23 +22,23 @@ const Home: FC = () => {
     const { teams, getChildrenTeams, getInitialTeams } =
         useContext(TeamsContext)
 
-    const handleClick = useCallback((id: string) => {
+    const handleClick = (id: string) => {
         getTeam(id)
         getChildrenTeams(id)
-    }, [])
+    }
 
-    const goBack = useCallback((team: ITeam) => {
+    const goBack = (team: ITeam) => {
         if (team.parentTeam) handleClick(team.parentTeam)
         else {
             getInitialTeams()
             setCurrentTeam(null)
         }
-    }, [])
+    }
 
-    const getTeam = useCallback(async (id: string) => {
+    const getTeam = async (id: string) => {
         const { data } = await fetchTeam(id)
         if (data) setCurrentTeam(data)
-    }, [])
+    }
 
     return (
         <>

@@ -1,6 +1,7 @@
 import { ListItem } from '@mui/material'
 import { FC, useCallback, useState } from 'react'
 import EmployeeModal from '../modals/EmployeeModal'
+import { useTranslation } from 'react-i18next'
 
 const styles = {
     listItem: {
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const EmployeeAddItem: FC<Props> = ({ reload }) => {
+    const { t } = useTranslation('common')
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
 
     const onClick = useCallback(() => {
@@ -35,7 +37,7 @@ const EmployeeAddItem: FC<Props> = ({ reload }) => {
     return (
         <>
             <ListItem onClick={onClick} sx={styles.listItem}>
-                Přidat zaměstnance
+                {t('addEmployee.title')}
             </ListItem>
             {modalIsOpen && (
                 <EmployeeModal

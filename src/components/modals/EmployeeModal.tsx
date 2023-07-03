@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 interface Props {
     open: boolean
     onClose: () => void
-    reload: () => void
+    reload?: () => void
     employee: IEmployee | null
 }
 
@@ -64,8 +64,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
             return
         }
 
-        onClose()
-        reload()
+        close()
     }, [])
 
     const add = useCallback(async (data: IEmployee) => {
@@ -75,8 +74,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
             return
         }
 
-        onClose()
-        reload()
+        close()
     }, [])
 
     const handleDelete = useCallback(async (employeeId: string) => {
@@ -85,8 +83,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
             setIsError(true)
             return
         }
-        onClose()
-        reload()
+        close()
     }, [])
 
     const onChange = useCallback(
@@ -99,6 +96,11 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
         },
         []
     )
+
+    const close = useCallback(() => {
+        if (reload) reload()
+        onClose()
+    }, [])
 
     return (
         <Modal open={open} onClose={onClose}>
