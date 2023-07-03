@@ -6,6 +6,17 @@ import { IEmployee } from '../avatars/AvatarGroup'
 import { ITeam } from '../../pages/Home'
 import moment from 'moment'
 
+const styles = {
+    card: {
+        m: 5,
+        width: '500px',
+        '&:hover': {
+            backgroundColor: '#f5f5f5',
+            transition: '.5s',
+        },
+    },
+}
+
 interface Props {
     team: ITeam
 }
@@ -25,16 +36,7 @@ const TeamInfoCard: FC<Props> = ({ team }) => {
 
     return (
         <Grid display="flex" justifyContent="center">
-            <Card
-                sx={{
-                    m: 5,
-                    width: '500px',
-                    '&:hover': {
-                        backgroundColor: '#f5f5f5',
-                        transition: '.5s',
-                    },
-                }}
-            >
+            <Card sx={styles.card}>
                 <CardContent>
                     <Typography variant="h4" align="center" mb={2}>
                         Informace o týmu
