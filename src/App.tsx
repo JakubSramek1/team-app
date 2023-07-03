@@ -27,7 +27,11 @@ function App() {
 
     return (
         <TeamsContext.Provider
-            value={{ teams, getChildrenTeams: (teamId) => getChildren(teamId) }}
+            value={{
+                teams,
+                getChildrenTeams: (teamId) => getChildren(teamId),
+                getInitialTeams,
+            }}
         >
             <Home />
         </TeamsContext.Provider>
