@@ -1,6 +1,5 @@
 import { ListItem } from '@mui/material'
-import { FC, useState } from 'react'
-import { addEmployee } from '../../api/employees'
+import { FC, useCallback, useState } from 'react'
 import EmployeeModal from '../modals/EmployeeModal'
 
 const styles = {
@@ -25,13 +24,13 @@ interface Props {
 const EmployeeAddItem: FC<Props> = ({ reload }) => {
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
 
-    const onClick = async () => {
+    const onClick = useCallback(() => {
         setModalIsOpen(true)
-    }
+    }, [])
 
-    const onCloseModal = async () => {
+    const onCloseModal = useCallback(() => {
         setModalIsOpen(false)
-    }
+    }, [])
 
     return (
         <>

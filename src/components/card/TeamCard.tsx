@@ -12,7 +12,7 @@ interface Props {
     onClick?: (id: string) => void
 }
 
-const TeamCard: FC<Props> = ({ id, name, parentTeam, onClick }) => {
+const TeamCard: FC<Props> = ({ id, name, onClick }) => {
     return (
         <Card
             sx={{ m: 5, width: '300px' }}

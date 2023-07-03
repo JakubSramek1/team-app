@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from 'react'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { fetchTeamEmployees } from '../../api/employees'
 
 export interface IEmployee {
@@ -34,10 +34,10 @@ const AvatarContainer: FC<Props> = ({ teamId }) => {
         handler()
     }, [])
 
-    const handler = async () => {
+    const handler = useCallback(async () => {
         const { data } = await fetchTeamEmployees(teamId)
         if (data) setAvatars(data)
-    }
+    }, [])
 
     return (
         <AvatarGroup max={4}>

@@ -1,23 +1,15 @@
-import {
-    Alert,
-    Box,
-    Button,
-    Grid,
-    MenuItem,
-    Modal,
-    Typography,
-} from '@mui/material'
-import { FC, useEffect, useState } from 'react'
-import { IEmployee } from '../avatars/AvatarGroup'
-import { Edit, Close, Delete } from '@mui/icons-material'
-import PrimaryInput from '../inputs/PrimaryInput'
-import { fetchAllTeams } from '../../api/teams'
-import { ITeam } from '../../pages/Home'
+import { Close, Delete, Edit } from '@mui/icons-material'
+import { Alert, Button, Grid, MenuItem, Modal, Typography } from '@mui/material'
+import { FC, useCallback, useEffect, useState } from 'react'
 import {
     addEmployee,
     deleteEmployee,
     updateEmployee,
 } from '../../api/employees'
+import { fetchAllTeams } from '../../api/teams'
+import { ITeam } from '../../pages/Home'
+import { IEmployee } from '../avatars/AvatarGroup'
+import PrimaryInput from '../inputs/PrimaryInput'
 
 interface Props {
     open: boolean
@@ -31,7 +23,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 300,
     bgcolor: '#fff',
     borderRadius: '5px',
     boxShadow: 24,
@@ -48,55 +40,67 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
         getTeams()
     }, [])
 
-    const getTeams = async () => {
+    const getTeams = useCallback(async () => {
         const { data } = await fetchAllTeams()
         if (data) setTeams(data)
-    }
+    }, [])
 
-    const save = async () => {
-        if (modalData) {
-            if (employee) {
-                const { error } = await updateEmployee(modalData)
-                if (error) {
-                    setIsError(true)
-                    return
-                }
-            } else {
-                const { error } = await addEmployee(modalData)
-                if (error) {
-                    setIsError(true)
-                    return
-                }
+    const handleSave = useCallback(
+        async (data: IEmployee) => {
+            if (data) {
+                if (!employee) await add(data)
+                else await update(data)
             }
-            onClose()
-            reload()
-        }
-    }
+        },
+        [employee]
+    )
 
-    const handleDelete = async (employeeId: string) => {
+    const update = useCallback(async (data: IEmployee) => {
+        const { error } = await updateEmployee(data)
+        if (error) {
+            setIsError(true)
+            return
+        }
+
+        onClose()
+        reload()
+    }, [])
+
+    const add = useCallback(async (data: IEmployee) => {
+        const { error } = await addEmployee(data)
+        if (error) {
+            setIsError(true)
+            return
+        }
+
+        onClose()
+        reload()
+    }, [])
+
+    const handleDelete = useCallback(async (employeeId: string) => {
         const { error } = await deleteEmployee(employeeId)
         if (error) {
             setIsError(true)
             return
         }
         onClose()
-        reload() //rename
-    }
+        reload()
+    }, [])
 
-    const onChange = (
-        param: keyof IEmployee,
-        value: IEmployee[keyof IEmployee]
-    ) => {
-        setData((prev) =>
-            prev
-                ? { ...prev, [param]: value }
-                : Object.assign({ [param]: value })
-        )
-    }
+    const onChange = useCallback(
+        (param: keyof IEmployee, value: IEmployee[keyof IEmployee]) => {
+            setData((prev) =>
+                prev
+                    ? { ...prev, [param]: value }
+                    : Object.assign({ [param]: value })
+            )
+        },
+        []
+    )
 
     return (
         <Modal open={open} onClose={onClose}>
-            <Box sx={style}>
+            <Grid sx={style}>
                 <Grid display="flex" justifyContent="space-between" mb={3}>
                     <Typography variant="h5" align="center">
                         Zaměstnanec
@@ -181,14 +185,14 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
                     {isEditMode && (
                         <Button
                             variant="outlined"
-                            onClick={save}
+                            onClick={() => modalData && handleSave(modalData)}
                             color="primary"
                         >
                             Uložit
                         </Button>
                     )}
                 </Grid>
-            </Box>
+            </Grid>
         </Modal>
     )
 }
