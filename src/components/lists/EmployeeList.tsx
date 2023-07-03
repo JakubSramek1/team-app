@@ -16,10 +16,13 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
         null
     )
 
-    const handleClick = useCallback((employeeId: string) => {
-        const current = employees.find(({ id }) => id === employeeId)
-        setCurrentEmployee(current ?? null)
-    }, [])
+    const handleClick = useCallback(
+        (employeeId: string, employees: IEmployee[]) => {
+            const current = employees.find(({ id }) => id === employeeId)
+            setCurrentEmployee(current ?? null)
+        },
+        []
+    )
 
     const onCloseModal = useCallback(() => {
         setCurrentEmployee(null)
@@ -39,7 +42,7 @@ const EmployeeList: FC<Props> = ({ employees, onUpdate }) => {
                             <EmployeeListItem
                                 key={id}
                                 active={!endDate}
-                                onClick={() => handleClick(id)}
+                                onClick={() => handleClick(id, employees)}
                                 avatarAlt={name}
                                 primaryItemText={`${name} ${surname}`}
                                 secondaryItemText={position}
