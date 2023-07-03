@@ -1,17 +1,13 @@
-import { FC } from 'react'
-import { useEffect, useState } from 'react'
+import { FC, useCallback, useContext } from 'react'
+import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import TeamCard from '../components/card/TeamCard'
 import { IEmployee } from '../components/avatars/AvatarGroup'
 import EmployeeList from '../components/lists/EmployeeList'
-import { Box, Card, CardContent, Grid } from '@mui/material'
-import {
-    fetchAllTeams,
-    fetchChildrenTeams,
-    fetchParentTeam,
-    fetchTeam,
-} from '../api/teams'
+import { Card, CardContent, Grid } from '@mui/material'
+import { fetchTeam } from '../api/teams'
 import { fetchTeamEmployees } from '../api/employees'
+import { TeamsContext } from '../context/TeamsContext'
 
 export interface ITeam {
     createdAt: string | null
@@ -21,50 +17,28 @@ export interface ITeam {
 }
 
 const Home: FC = () => {
-    const [teams, setTeams] = useState<ITeam[]>([])
     const [currentTeam, setCurrentTeam] = useState<ITeam | null>(null)
-    const [parentTeam, setParentTeam] = useState<ITeam | null>(null)
     const [teamEmployees, setTeamEmployees] = useState<IEmployee[]>([])
+    const { teams, getChildrenTeams } = useContext(TeamsContext)
 
-    useEffect(() => {
-        handler()
+    const handleClick = useCallback((id: string) => {
+        getTeam(id)
+        getChildrenTeams(id)
+        getTeamEmployees(id)
     }, [])
 
-    const handler = async () => {
-        const { data } = await fetchAllTeams()
-        if (data) {
-            const filtered = data.filter((t) => t.parentTeam === null)
-            setTeams(filtered)
-        }
-    }
-
-    const handleClick = async (id: string) => {
-        getTeam(id)
-        const { data } = await fetchChildrenTeams(id)
-        if (data) setTeams(data)
-    }
-
-    const getTeam = async (id: string) => {
+    const getTeam = useCallback(async (id: string) => {
         const { data } = await fetchTeam(id)
-        if (data) {
-            setCurrentTeam(data)
-            getParentTeam(id)
-            getTeamEmployees(id)
-        }
-    }
+        if (data) setCurrentTeam(data)
+    }, [])
 
-    const getParentTeam = async (parentId: string) => {
-        const { data } = await fetchParentTeam(parentId)
-        if (data) setParentTeam(data)
-    }
-
-    const getTeamEmployees = async (teamId: string) => {
+    const getTeamEmployees = useCallback(async (teamId: string) => {
         const { data } = await fetchTeamEmployees(teamId)
         if (data) setTeamEmployees(data)
-    }
+    }, [])
 
     return (
-        <Box>
+        <>
             {!currentTeam && (
                 <Typography variant="h3" align="center" mt={3}>
                     Týmy
@@ -119,7 +93,7 @@ const Home: FC = () => {
                 </Typography>
             )}
 
-            <Box display="flex" flexDirection="row" mb={6}>
+            <Grid display="flex" flexWrap="wrap" flexDirection="row" mb={6}>
                 {teams.map(({ id, name, parentTeam }) => (
                     <TeamCard
                         key={id}
@@ -129,8 +103,8 @@ const Home: FC = () => {
                         onClick={() => handleClick(id)}
                     />
                 ))}
-            </Box>
-        </Box>
+            </Grid>
+        </>
     )
 }
 
