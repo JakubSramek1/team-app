@@ -1,0 +1,30 @@
+{
+    "home": {
+        "title": "Týmy"
+    },
+    "controls": {
+        "back": "Zpět"
+    },
+    "childrenComponent": {
+        "title": "Podřazené týmy"
+    },
+    "teamInfo": {
+        "title": "Informace o týmu",
+        "name": "Název týmu",
+        "createdAt": "Datum vytvoření",
+        "teamMembersAmount": "Počet členů týmu",
+        "teamMembers": "Členové týmu"
+    },
+    "employeeModal": {
+        "title": "Zaměstnanec",
+        "name": "Jméno",
+        "surname": "Příjmení",
+        "position": "Pozice",
+        "team": "Tým",
+        "error": "Zaměstnance se nepodařilo uložit",
+        "actions": {
+            "cancel": "Zavřít",
+            "save": "Uložit"
+        }
+    }
+}

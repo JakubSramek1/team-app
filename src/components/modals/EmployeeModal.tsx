@@ -10,6 +10,7 @@ import { fetchAllTeams } from '../../api/teams'
 import { ITeam } from '../../pages/Home'
 import { IEmployee } from '../avatars/AvatarGroup'
 import PrimaryInput from '../inputs/PrimaryInput'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
     open: boolean
@@ -31,6 +32,7 @@ const style = {
 }
 
 const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
+    const { t } = useTranslation('common')
     const [isEditMode, setIsEditMode] = useState<boolean>(!employee)
     const [teams, setTeams] = useState<ITeam[]>([])
     const [modalData, setData] = useState<IEmployee | null>(employee)
@@ -103,7 +105,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
             <Grid sx={style}>
                 <Grid display="flex" justifyContent="space-between" mb={3}>
                     <Typography variant="h5" align="center">
-                        Zaměstnanec
+                        {t('employeeModal.title')}
                     </Typography>
                     <Grid>
                         {isEditMode ? (
@@ -133,25 +135,25 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
                 </Grid>
                 <Grid mb={3}>
                     <PrimaryInput
-                        label="Jméno"
+                        label={t('employeeModal.name')}
                         disabled={!isEditMode}
                         value={modalData?.name ?? null}
                         onChange={(name) => onChange('name', name)}
                     />
                     <PrimaryInput
-                        label="Příjmení"
+                        label={t('employeeModal.surname')}
                         disabled={!isEditMode}
                         value={modalData?.surname ?? null}
                         onChange={(surname) => onChange('surname', surname)}
                     />
                     <PrimaryInput
-                        label="Pozice"
+                        label={t('employeeModal.position')}
                         disabled={!isEditMode}
                         value={modalData?.position ?? null}
                         onChange={(position) => onChange('position', position)}
                     />
                     <PrimaryInput
-                        label="Tým"
+                        label={t('employeeModal.team')}
                         disabled={!isEditMode}
                         value={modalData?.team ?? null}
                         select
@@ -167,7 +169,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
                 {isError && (
                     <Grid display="flex" justifyContent="center" mb={3}>
                         <Alert severity="error">
-                            Zaměstnance se nepodařilo uložit
+                            {t('employeeModal.error')}
                         </Alert>
                     </Grid>
                 )}
@@ -180,7 +182,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
                         onClick={onClose}
                         color="primary"
                     >
-                        Zavřít
+                        {t('employeeModal.actions.cancel')}
                     </Button>
                     {isEditMode && (
                         <Button
@@ -188,7 +190,7 @@ const EmployeeModal: FC<Props> = ({ open, onClose, employee, reload }) => {
                             onClick={() => modalData && handleSave(modalData)}
                             color="primary"
                         >
-                            Uložit
+                            {t('employeeModal.actions.save')}
                         </Button>
                     )}
                 </Grid>

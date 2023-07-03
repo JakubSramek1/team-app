@@ -5,6 +5,7 @@ import { fetchTeamEmployees } from '../../api/employees'
 import { IEmployee } from '../avatars/AvatarGroup'
 import { ITeam } from '../../pages/Home'
 import moment from 'moment'
+import { useTranslation } from 'react-i18next'
 
 const styles = {
     card: {
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const TeamInfoCard: FC<Props> = ({ team }) => {
+    const { t } = useTranslation('common')
     const [teamEmployees, setTeamEmployees] = useState<IEmployee[]>([])
     const { name, createdAt, id } = team
 
@@ -39,22 +41,23 @@ const TeamInfoCard: FC<Props> = ({ team }) => {
             <Card sx={styles.card}>
                 <CardContent>
                     <Typography variant="h4" align="center" mb={2}>
-                        Informace o týmu
+                        {t('teamInfo.title')}
                     </Typography>
                     <Typography variant="body1" align="center">
-                        Název týmu: {name}
+                        {t('teamInfo.name')}: {name}
                     </Typography>
                     <Typography variant="body1" align="center">
-                        Datum vytvoření:{' '}
+                        {t('teamInfo.createdAt')}:{' '}
                         {moment(createdAt).format('DD.MM.YYYY, HH:mm')}
                     </Typography>
                     {teamEmployees.length > 0 && (
                         <Typography variant="body1" align="center">
-                            Počet členů týmu: {teamEmployees.length}
+                            {t('teamInfo.teamMembersAmount')}:{' '}
+                            {teamEmployees.length}
                         </Typography>
                     )}
                     <Typography variant="h5" align="center" mt={2}>
-                        Členové týmu
+                        {t('teamInfo.teamMembers')}
                     </Typography>
                     {teamEmployees.length > 0 && (
                         <EmployeeList
